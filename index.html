@@ -82,12 +82,13 @@
 
         /* --- DEPTH EFFECT CONTAINER --- */
         #app-container {
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
-                        filter 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                        border-radius 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+                        filter 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-radius 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             transform-origin: center top;
             width: 100%;
             background-color: #030303;
+            will-change: transform, filter;
         }
 
         body.modal-open {
@@ -96,9 +97,9 @@
         }
 
         body.modal-open #app-container {
-            transform: scale(0.95) translateY(20px);
-            filter: brightness(0.4) blur(1px);
-            border-radius: 20px;
+            transform: scale(0.95) translateY(15px);
+            filter: brightness(0.35) blur(2px);
+            border-radius: 16px;
             pointer-events: none;
         }
 
@@ -196,7 +197,7 @@
             border-radius: 50%;
             z-index: 9999;
             pointer-events: none;
-            transform: translate(-50%, -50%);
+            will-change: transform;
             mix-blend-mode: exclusion;
         }
         
@@ -208,10 +209,11 @@
             border-radius: 50%;
             z-index: 9998;
             pointer-events: none;
-            transform: translate(-50%, -50%);
-            transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1), 
-                        height 0.4s cubic-bezier(0.19, 1, 0.22, 1), 
-                        background-color 0.4s;
+            will-change: transform, width, height;
+            transition: width 0.25s cubic-bezier(0.19, 1, 0.22, 1), 
+                        height 0.25s cubic-bezier(0.19, 1, 0.22, 1), 
+                        background-color 0.25s ease-out,
+                        border-color 0.25s ease-out;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -219,16 +221,16 @@
         }
         
         body.hovering .cursor-outline {
-            width: 60px; height: 60px;
+            width: 60px !important; height: 60px !important;
             background-color: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.5) !important;
         }
         body.hovering .cursor-dot { opacity: 0; }
 
         body.viewing-project .cursor-outline {
-            width: 90px; height: 90px;
+            width: 90px !important; height: 90px !important;
             background-color: #EAEAEA;
-            border-color: transparent;
+            border-color: transparent !important;
             mix-blend-mode: normal;
         }
         body.viewing-project .cursor-outline::after {
@@ -258,13 +260,13 @@
         .modal-backdrop {
             position: fixed;
             inset: 0;
-            background: rgba(3, 3, 3, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(3, 3, 3, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             z-index: 90;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -282,10 +284,12 @@
             max-width: 900px;
             max-height: 90vh;
             overflow-y: auto;
-            transform: translateY(40px) scale(0.95);
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(30px) scale(0.97);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             opacity: 0;
             position: relative;
+            will-change: transform, opacity;
         }
         .modal-backdrop.active .modal-content {
             transform: translateY(0) scale(1);
@@ -307,19 +311,28 @@
         .reveal-text {
             opacity: 0;
             transform: translateY(20px);
-            transition: opacity 1s cubic-bezier(0.215, 0.61, 0.355, 1), transform 1s cubic-bezier(0.215, 0.61, 0.355, 1);
+            transition: opacity 0.8s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                        transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1),
+                        filter 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
             filter: blur(4px);
+            will-change: opacity, transform, filter;
         }
         .reveal-text.active {
             opacity: 1;
             transform: translateY(0);
             filter: blur(0);
+            will-change: auto;
         }
 
         .magnetic-wrap {
             display: inline-block;
             position: relative;
             z-index: 50;
+        }
+        .magnetic-wrap:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.8);
+            outline-offset: 4px;
+            border-radius: 4px;
         }
         .magnetic-area {
             position: absolute;
@@ -328,11 +341,15 @@
             border-radius: 50%;
         }
 
-        .project-img-container { overflow: hidden; }
+        .project-img-container { 
+            overflow: hidden;
+            backface-visibility: hidden;
+        }
         .project-img {
             will-change: transform;
             transform: scale(1.01);
-            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            backface-visibility: hidden;
         }
         .group:hover .project-img {
             transform: scale(1.08);
@@ -348,9 +365,13 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+            transition: transform 0.7s cubic-bezier(0.7, 0, 0.3, 1),
+                        opacity 0.4s ease-out;
         }
-        .loader-hidden { transform: translateY(-100%); }
+        .loader-hidden { 
+            transform: translateY(-100%); 
+            opacity: 0;
+        }
         
         /* Canvas */
         #canvas-container {
@@ -366,13 +387,21 @@
             #canvas-container { width: 100%; opacity: 0.2; }
         }
 
-        .writing-item { transition: all 0.4s ease; }
+        .writing-item { 
+            transition: all 0.3s ease;
+        }
+        .writing-item:focus-visible {
+            outline: 2px solid #0F0F0F;
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
         .writing-arrow { 
             opacity: 0; 
             transform: translateX(-10px); 
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
         }
-        .writing-item:hover .writing-arrow {
+        .writing-item:hover .writing-arrow,
+        .writing-item:focus-visible .writing-arrow {
             opacity: 1;
             transform: translateX(0);
         }
@@ -420,13 +449,39 @@
             align-items: center;
         }
         .live-val { color: #EAEAEA; }
+
+        /* Screen reader only class */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        .focus\\:not-sr-only:focus {
+            position: absolute;
+            width: auto;
+            height: auto;
+            padding: 0;
+            margin: 0;
+            overflow: visible;
+            clip: auto;
+            white-space: normal;
+        }
     </style>
 </head>
 <body class="antialiased">
 
+    <!-- Skip to main content for accessibility -->
+    <a href="#work" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:text-black focus:px-4 focus:py-2">Skip to main content</a>
+
     <!-- Cursor -->
-    <div class="cursor-dot hidden md:block"></div>
-    <div class="cursor-outline hidden md:block"></div>
+    <div class="cursor-dot hidden md:block" aria-hidden="true"></div>
+    <div class="cursor-outline hidden md:block" aria-hidden="true"></div>
 
     <!-- Noise -->
     <div class="noise-overlay"></div>
@@ -448,7 +503,7 @@
             <!-- Reading Progress Bar -->
             <div id="reading-progress" class="absolute top-0 left-0 h-1 bg-white w-0 transition-all duration-100 z-50"></div>
             
-            <button id="close-modal" class="absolute top-6 right-6 hover:rotate-90 transition-transform duration-300 group z-50">
+            <button id="close-modal" class="absolute top-6 right-6 hover:rotate-90 transition-transform duration-300 group z-50" aria-label="Close modal">
                 <i data-lucide="x" class="w-8 h-8 text-neutral-500 group-hover:text-white"></i>
             </button>
             
@@ -489,19 +544,19 @@
             </div>
 
             <!-- Mobile Menu Button -->
-            <button id="menu-btn" class="hover-target md:hidden group">
+            <button id="menu-btn" class="hover-target md:hidden group" aria-label="Open navigation menu" aria-expanded="false">
                 <i data-lucide="menu" class="w-6 h-6"></i>
             </button>
         </div>
     </nav>
 
     <!-- Mobile Menu -->
-    <div id="mobile-menu" class="fixed inset-0 bg-off-black z-30 transform translate-x-full transition-transform duration-700 cubic-bezier(0.7, 0, 0.3, 1) flex flex-col justify-center items-center space-y-10">
+    <div id="mobile-menu" class="fixed inset-0 bg-off-black z-30 transform translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.3,1)] flex flex-col justify-center items-center space-y-10" role="dialog" aria-modal="true" aria-label="Navigation menu">
         <a href="#work" class="font-display text-5xl hover:text-gray-500 mobile-link transition-colors">WORK</a>
         <a href="#writing" class="font-display text-5xl hover:text-gray-500 mobile-link transition-colors">WRITING</a>
         <a href="#philosophy" class="font-display text-5xl hover:text-gray-500 mobile-link transition-colors">PHILOSOPHY</a>
         <a href="#contact" class="font-display text-5xl hover:text-gray-500 mobile-link transition-colors">CONTACT</a>
-        <button id="close-menu-btn" class="absolute top-8 right-8 p-4 hover:rotate-90 transition-transform duration-300">
+        <button id="close-menu-btn" class="absolute top-8 right-8 p-4 hover:rotate-90 transition-transform duration-300" aria-label="Close navigation menu">
             <i data-lucide="x" class="w-8 h-8 text-white"></i>
         </button>
     </div>
@@ -668,7 +723,7 @@
 
             <div class="space-y-8">
                 <!-- Essay 1 -->
-                <div data-writing="rhythm" class="writing-item block border-b border-neutral-300 pb-8 hover:border-black reveal-text group cursor-none hover-target cursor-pointer">
+                <div data-writing="rhythm" class="writing-item block border-b border-neutral-300 pb-8 hover:border-black reveal-text group cursor-none hover-target cursor-pointer" tabindex="0" role="button" aria-label="Read essay: Rhythm in Volatility">
                     <div class="flex flex-col md:flex-row md:items-baseline justify-between gap-4">
                         <div class="flex items-center gap-4">
                              <i data-lucide="arrow-right" class="writing-arrow w-6 h-6 text-neutral-800"></i>
@@ -680,7 +735,7 @@
                 </div>
 
                 <!-- Essay 2 -->
-                <div data-writing="hunter" class="writing-item block border-b border-neutral-300 pb-8 hover:border-black reveal-text group cursor-none hover-target cursor-pointer">
+                <div data-writing="hunter" class="writing-item block border-b border-neutral-300 pb-8 hover:border-black reveal-text group cursor-none hover-target cursor-pointer" tabindex="0" role="button" aria-label="Read essay: The Patient Hunter">
                      <div class="flex flex-col md:flex-row md:items-baseline justify-between gap-4">
                         <div class="flex items-center gap-4">
                              <i data-lucide="arrow-right" class="writing-arrow w-6 h-6 text-neutral-800"></i>
@@ -692,7 +747,7 @@
                 </div>
 
                 <!-- Essay 3 -->
-                <div data-writing="nuclear" class="writing-item block border-b border-neutral-300 pb-8 hover:border-black reveal-text group cursor-none hover-target cursor-pointer">
+                <div data-writing="nuclear" class="writing-item block border-b border-neutral-300 pb-8 hover:border-black reveal-text group cursor-none hover-target cursor-pointer" tabindex="0" role="button" aria-label="Read essay: The Nuclear Option">
                      <div class="flex flex-col md:flex-row md:items-baseline justify-between gap-4">
                         <div class="flex items-center gap-4">
                              <i data-lucide="arrow-right" class="writing-arrow w-6 h-6 text-neutral-800"></i>
@@ -1422,9 +1477,17 @@
 
         // Attach listeners to writing items
         document.querySelectorAll('.writing-item').forEach(item => {
-            item.addEventListener('click', () => {
+            const handleOpen = () => {
                 const writingId = item.dataset.writing;
                 openModal(writingId, 'writing');
+            };
+            item.addEventListener('click', handleOpen);
+            // Keyboard support
+            item.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleOpen();
+                }
             });
         });
 
@@ -1472,6 +1535,15 @@
         });
 
         // --- 10. GENERATIVE COVERS ---
+        // Debounce utility for resize handlers
+        function debounce(fn, delay) {
+            let timeoutId;
+            return function(...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => fn.apply(this, args), delay);
+            };
+        }
+        
         function initGenerativeCovers() {
             // 1. Bittensor (Network Graph)
             const canvas1 = document.getElementById('canvas-bittensor');
@@ -1506,7 +1578,7 @@
                     }
                 };
                 resize();
-                window.addEventListener('resize', resize);
+                window.addEventListener('resize', debounce(resize, 150));
 
                 const animate = () => {
                     ctx.clearRect(0, 0, width, height);
@@ -1816,20 +1888,24 @@
         window.addEventListener('mousemove', (e) => {
             mouse.x = e.clientX;
             mouse.y = e.clientY;
-            cursorDot.style.left = `${mouse.x}px`;
-            cursorDot.style.top = `${mouse.y}px`;
-        });
+            // Use transform for better performance (hardware accelerated)
+            cursorDot.style.transform = `translate(${mouse.x - 3}px, ${mouse.y - 3}px)`;
+        }, { passive: true });
 
         function animateCursor() {
-            const speed = 0.15; 
+            // Increased speed from 0.15 to 0.35 for lower latency cursor following
+            const speed = 0.35; 
             cursor.x += (mouse.x - cursor.x) * speed;
             cursor.y += (mouse.y - cursor.y) * speed;
-            cursorOutline.style.left = `${cursor.x}px`;
-            cursorOutline.style.top = `${cursor.y}px`;
+            // Use transform for better performance (hardware accelerated)
+            cursorOutline.style.transform = `translate(${cursor.x - 16}px, ${cursor.y - 16}px)`;
             requestAnimationFrame(animateCursor);
         }
         animateCursor();
 
+        // Track if cursor is in a magnetic field for scaling
+        let isMagnetic = false;
+        
         magneticWraps.forEach(wrap => {
             const content = wrap.querySelector('.magnetic-content');
             wrap.addEventListener('mousemove', (e) => {
@@ -1837,13 +1913,17 @@
                 const x = e.clientX - rect.left - rect.width / 2;
                 const y = e.clientY - rect.top - rect.height / 2;
                 content.style.transform = `translate(${x * 0.4}px, ${y * 0.4}px)`;
-                cursorOutline.style.transform = `translate(-50%, -50%) scale(1.8)`;
+                isMagnetic = true;
+                cursorOutline.style.width = '58px';
+                cursorOutline.style.height = '58px';
                 cursorOutline.style.borderColor = "rgba(255, 255, 255, 0.8)";
-            });
+            }, { passive: true });
             wrap.addEventListener('mouseleave', () => {
                 content.style.transform = `translate(0px, 0px)`;
-                cursorOutline.style.transform = `translate(-50%, -50%) scale(1)`;
-                cursorOutline.style.borderColor = "rgba(255, 255, 255, 0.3)";
+                isMagnetic = false;
+                cursorOutline.style.width = '32px';
+                cursorOutline.style.height = '32px';
+                cursorOutline.style.borderColor = "rgba(255, 255, 255, 0.2)";
             });
         });
 
@@ -1863,9 +1943,11 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
+                        // Stop observing after animation triggers for performance
+                        observer.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+            }, { threshold: 0.1, rootMargin: "0px 0px -80px 0px" });
 
             document.querySelectorAll('.reveal-text').forEach(el => observer.observe(el));
         }
@@ -1877,7 +1959,9 @@
         
         function toggleMenu() {
             mobileMenu.classList.toggle('translate-x-full');
-            document.body.style.overflow = mobileMenu.classList.contains('translate-x-full') ? 'auto' : 'hidden';
+            const isOpen = !mobileMenu.classList.contains('translate-x-full');
+            document.body.style.overflow = isOpen ? 'hidden' : 'auto';
+            menuBtn.setAttribute('aria-expanded', isOpen.toString());
         }
         menuBtn.addEventListener('click', toggleMenu);
         closeBtnMenu.addEventListener('click', toggleMenu);
@@ -1936,7 +2020,7 @@
             document.addEventListener('mousemove', (event) => {
                 mouseX = (event.clientX - windowHalfX) * 0.0003;
                 mouseY = (event.clientY - windowHalfY) * 0.0003;
-            });
+            }, { passive: true });
 
             // Mobile Gyroscope
             function handleOrientation(event) {
@@ -2015,7 +2099,7 @@
                 
                 lastMouseX = e.clientX;
                 lastMouseY = e.clientY;
-            });
+            }, { passive: true });
 
             function animateOsc() {
                 ctx.clearRect(0, 0, width, height);
