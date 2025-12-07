@@ -79,7 +79,35 @@
             transition: background-color 0.5s ease;
         }
 
-        /* Custom cursor only on desktop */
+        /* Enhanced focus states for accessibility */
+        a:focus-visible, button:focus-visible, [role="button"]:focus-visible {
+            outline: 2px solid white;
+            outline-offset: 4px;
+        }
+        
+        input:focus-visible, textarea:focus-visible, select:focus-visible {
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+        
+        /* Ensure minimum touch target sizes on mobile */
+        @media (max-width: 768px) {
+            button, a, [role="button"], input[type="submit"] {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+        
+        /* Improve form field error states */
+        input:invalid:not(:placeholder-shown),
+        textarea:invalid:not(:placeholder-shown) {
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+        
+        input:valid:not(:placeholder-shown),
+        textarea:valid:not(:placeholder-shown) {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
         @media (min-width: 768px) {
             body {
                 cursor: none;
@@ -680,6 +708,292 @@
             clip: auto;
             white-space: normal;
         }
+
+        /* --- CHATBOT STYLES --- */
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            color: #030303;
+            border: none;
+            box-shadow: 0 4px 24px rgba(255,255,255,0.15);
+            z-index: 50;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #chatbot-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 32px rgba(255,255,255,0.25);
+        }
+        #chatbot-toggle.active {
+            transform: scale(0.95);
+        }
+        .chat-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: white;
+            color: #030303;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border: 2px solid #030303;
+            font-family: 'Space Grotesk', monospace;
+        }
+        
+        #chatbot-window {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            width: 420px;
+            height: 580px;
+            background: #0A0A0A;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(20px) scale(0.96);
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #chatbot-window.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: all;
+        }
+        
+        .chat-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.15);
+            border-radius: 2px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        
+        .chat-message {
+            display: flex;
+            gap: 0.875rem;
+            animation: messageSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .chat-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .chat-message.user .chat-avatar {
+            background: white;
+            border-color: white;
+        }
+        
+        .chat-bubble {
+            max-width: 75%;
+            padding: 1rem 1.125rem;
+            border-radius: 14px;
+            font-size: 14px;
+            line-height: 1.65;
+            font-family: 'Inter', sans-serif;
+        }
+        .chat-message.user .chat-bubble {
+            background: rgba(255,255,255,0.12);
+            color: #EAEAEA;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .chat-message.ai .chat-bubble {
+            background: rgba(255,255,255,0.04);
+            color: #D4D4D4;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .chat-bubble strong {
+            color: white;
+            font-weight: 600;
+        }
+        .chat-bubble em {
+            font-style: italic;
+            color: #A3A3A3;
+        }
+        .chat-bubble code {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 13px;
+        }
+        
+        .chat-timestamp {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 10px;
+            color: #525252;
+            margin-top: 0.375rem;
+            letter-spacing: 0.02em;
+        }
+        .chat-message.user .chat-timestamp {
+            text-align: right;
+        }
+        
+        .chat-input-area {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            gap: 0.875rem;
+            background: rgba(255,255,255,0.02);
+        }
+        
+        .chat-input {
+            flex: 1;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 0.875rem 1rem;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.25s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .chat-input:focus {
+            border-color: rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.08);
+        }
+        .chat-input::placeholder {
+            color: #737373;
+        }
+        
+        .chat-send-btn {
+            width: 44px;
+            height: 44px;
+            background: white;
+            color: #030303;
+            border: none;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+        }
+        .chat-send-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255,255,255,0.2);
+        }
+        .chat-send-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+        .chat-send-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 1rem 1.125rem;
+        }
+        .typing-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.35);
+            animation: typingBounce 1.3s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
+            30% { transform: translateY(-10px); opacity: 0.7; }
+        }
+        
+        .chat-footer {
+            padding: 0.875rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 9px;
+            color: #404040;
+            text-align: center;
+            font-family: 'Space Grotesk', monospace;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            #chatbot-toggle {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 56px;
+                height: 56px;
+            }
+            #chatbot-window {
+                bottom: 0;
+                right: 0;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+                transform: translateY(100%);
+            }
+            #chatbot-window.active {
+                transform: translateY(0);
+            }
+            .chat-bubble {
+                max-width: 85%;
+            }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -717,6 +1031,46 @@
             
             <!-- Content Injection Area -->
             <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- CHATBOT -->
+    <button id="chatbot-toggle" aria-label="Open chatbot" aria-expanded="false">
+        <i data-lucide="message-circle" class="w-6 h-6"></i>
+        <span class="chat-badge" style="display: none;">1</span>
+    </button>
+
+    <div id="chatbot-window" role="dialog" aria-labelledby="chat-title" aria-modal="true">
+        <div class="chat-header">
+            <div>
+                <h3 id="chat-title" class="font-display text-base font-medium tracking-tight">Digital Assistant</h3>
+                <p class="font-mono text-[9px] text-neutral-600 tracking-[0.15em] uppercase mt-0.5">Portfolio Guide</p>
+            </div>
+            <button id="chatbot-close" class="hover:rotate-90 transition-transform duration-300" aria-label="Close chatbot">
+                <i data-lucide="x" class="w-5 h-5 text-neutral-500 hover:text-white"></i>
+            </button>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will be injected here -->
+        </div>
+        
+        <div class="chat-input-area">
+            <input 
+                type="text" 
+                id="chat-input" 
+                class="chat-input" 
+                placeholder="Ask about services, work, or philosophy..."
+                aria-label="Chat message input"
+                maxlength="500"
+            />
+            <button id="chat-send" class="chat-send-btn" aria-label="Send message">
+                <i data-lucide="send" class="w-5 h-5"></i>
+            </button>
+        </div>
+        
+        <div class="chat-footer">
+            POWERED BY GEMINI AI
         </div>
     </div>
 
@@ -794,7 +1148,7 @@
             <!-- Bio / Details -->
             <div class="mt-20 flex flex-col md:flex-row justify-between items-start md:items-end max-w-6xl pointer-events-auto">
                 <div class="max-w-xl">
-                    <p class="font-sans text-lg md:text-xl text-neutral-400 reveal-text leading-relaxed" style="transition-delay: 500ms;">
+                    <p class="font-sans text-lg md:text-xl text-neutral-400 leading-[1.8] reveal-text" style="transition-delay: 500ms;">
                         Offering <span class="text-white border-b border-white/20 pb-1">financial consulting</span> and <span class="text-white border-b border-white/20 pb-1">bespoke web design</span>. 
                         I transform complex financial systems into executable clarity and build digital experiences that convert attention into action.
                     </p>
@@ -1273,8 +1627,8 @@
                     <div class="mt-12 border border-white/10 bg-[#050505] font-mono text-xs rounded overflow-hidden">
                         <div class="flex items-center gap-2 px-4 py-2 border-b border-white/10 bg-[#0A0A0A]">
                             <div class="w-2 h-2 rounded-full bg-red-500"></div>
-                            <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
-                            <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                            <div class="w-2 h-2 rounded-full bg-white/30"></div>
+                            <div class="w-2 h-2 rounded-full bg-white/30"></div>
                             <span class="ml-2 text-neutral-500">PayrollStream.sol</span>
                         </div>
                         <div class="p-6 overflow-x-auto">
@@ -1717,7 +2071,20 @@
 
             modal.classList.add('active');
             document.body.classList.add('modal-open');
+            lockBodyScroll();
             lucide.createIcons();
+        }
+        
+        // Helper functions for body scroll lock
+        function lockBodyScroll() {
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+            document.body.style.overflow = 'hidden';
+            document.body.style.paddingRight = scrollbarWidth + 'px';
+        }
+        
+        function unlockBodyScroll() {
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
         }
 
         function closeModalFunc() {
@@ -1739,6 +2106,7 @@
             setTimeout(() => {
                 modal.querySelector('.modal-content').classList.remove('paper-mode');
                 modalBody.innerHTML = ''; // Clear content to reset animations
+                unlockBodyScroll();
             }, 500);
         }
 
@@ -1786,7 +2154,57 @@
             });
         });
 
-        // Service Inquiry Modals
+        // Enhanced form submission handling
+        document.addEventListener('submit', async function(e) {
+            if (e.target.tagName === 'FORM' && e.target.action.includes('formspree')) {
+                e.preventDefault();
+                
+                const form = e.target;
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                
+                // Disable form and show loading state
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                submitBtn.textContent = 'SENDING...';
+                
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    
+                    if (response.ok) {
+                        // Success state
+                        submitBtn.classList.remove('bg-white', 'text-black');
+                        submitBtn.classList.add('bg-white', 'text-black');
+                        submitBtn.textContent = '✓ MESSAGE SENT!';
+                        form.reset();
+                        
+                        // Reset after 3 seconds
+                        setTimeout(() => {
+                            submitBtn.disabled = false;
+                            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                            submitBtn.textContent = originalText;
+                        }, 3000);
+                    } else {
+                        throw new Error('Form submission failed');
+                    }
+                } catch (error) {
+                    // Error state
+                    submitBtn.classList.add('bg-red-500', 'text-white');
+                    submitBtn.textContent = '✗ ERROR - TRY AGAIN';
+                    
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-red-500');
+                        submitBtn.classList.add('bg-white');
+                        submitBtn.textContent = originalText;
+                    }, 3000);
+                }
+            }
+        });
         const serviceData = {
             financial: {
                 title: "FINANCIAL CONSULTING",
@@ -1806,7 +2224,7 @@
                 title: "WEBSITE DESIGN",
                 subtitle: "Bespoke Digital Experiences",
                 description: "Let's craft a digital experience that captures your brand's unique essence and converts visitors into believers.",
-                formspreeId: "YOUR_FORMSPREE_ID_HERE",
+                formspreeId: "xzznvvzw",
                 services: [
                     "Custom Website Design & Development",
                     "Interactive & Generative Art",
@@ -1876,8 +2294,8 @@
                                             <div class="flex items-center gap-4">
                                                 <div class="flex gap-2">
                                                     <div class="w-3 h-3 rounded-full bg-neutral-800 group-hover:bg-red-500/30 transition-colors duration-500"></div>
-                                                    <div class="w-3 h-3 rounded-full bg-neutral-800 group-hover:bg-yellow-500/30 transition-colors duration-500" style="transition-delay: 50ms"></div>
-                                                    <div class="w-3 h-3 rounded-full bg-neutral-800 group-hover:bg-emerald-500/30 transition-colors duration-500" style="transition-delay: 100ms"></div>
+                                                    <div class="w-3 h-3 rounded-full bg-neutral-800 group-hover:bg-white/30 transition-colors duration-500" style="transition-delay: 50ms"></div>
+                                                    <div class="w-3 h-3 rounded-full bg-neutral-800 group-hover:bg-white/30 transition-colors duration-500" style="transition-delay: 100ms"></div>
                                                 </div>
                                                 <span class="font-mono text-xs text-neutral-500 tracking-wider" id="statement-filename">GREENSCAPE_INCOME_FY2024.xlsx</span>
                                             </div>
@@ -2106,8 +2524,8 @@
                                                 <div class="bg-[#0A0A0A] border-b border-white/5 px-4 py-3 flex items-center gap-3">
                                                     <div class="flex gap-2">
                                                         <div class="w-3 h-3 rounded-full bg-red-500/30"></div>
-                                                        <div class="w-3 h-3 rounded-full bg-yellow-500/30"></div>
-                                                        <div class="w-3 h-3 rounded-full bg-emerald-500/30"></div>
+                                                        <div class="w-3 h-3 rounded-full bg-white/30"></div>
+                                                        <div class="w-3 h-3 rounded-full bg-white/30"></div>
                                                     </div>
                                                     <div class="flex-1 flex items-center gap-2 px-4 py-1.5 bg-white/5 rounded font-mono text-xs text-neutral-600">
                                                         <i data-lucide="lock" class="w-3 h-3"></i>
@@ -2119,24 +2537,24 @@
                                                 <div class="bg-[#030303] p-12 relative" style="min-height: 500px;" id="browser-viewport">
                                                     <!-- Grid Overlay with Pulse -->
                                                     <div class="absolute inset-0 grid grid-cols-12 gap-px pointer-events-none" id="grid-overlay" style="animation: gridPulse 4s ease-in-out infinite;">
-                                                        <div class="border-l border-emerald-500/40"></div>
-                                                        <div class="border-l border-emerald-500/40"></div>
-                                                        <div class="border-l border-emerald-500/40"></div>
-                                                        <div class="border-l border-emerald-500/40"></div>
-                                                        <div class="border-l border-emerald-500/40"></div>
-                                                        <div class="border-l border-emerald-500/40"></div>
-                                                        <div class="border-l border-emerald-500/40"></div>
-                                                        <div class="border-l border-emerald-500/40"></div>
-                                                        <div class="border-l border-emerald-500/40"></div>
-                                                        <div class="border-l border-emerald-500/40"></div>
-                                                        <div class="border-l border-emerald-500/40"></div>
-                                                        <div class="border-l border-emerald-500/40"></div>
+                                                        <div class="border-l border-white/20"></div>
+                                                        <div class="border-l border-white/20"></div>
+                                                        <div class="border-l border-white/20"></div>
+                                                        <div class="border-l border-white/20"></div>
+                                                        <div class="border-l border-white/20"></div>
+                                                        <div class="border-l border-white/20"></div>
+                                                        <div class="border-l border-white/20"></div>
+                                                        <div class="border-l border-white/20"></div>
+                                                        <div class="border-l border-white/20"></div>
+                                                        <div class="border-l border-white/20"></div>
+                                                        <div class="border-l border-white/20"></div>
+                                                        <div class="border-l border-white/20"></div>
                                                     </div>
                                                     
                                                     <!-- Building Cursor Indicator -->
                                                     <div class="absolute top-4 right-4 flex items-center gap-2 z-20">
-                                                        <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full" style="animation: cursorBlink 1s infinite;"></div>
-                                                        <span class="font-mono text-xs text-emerald-400/60">RENDERING</span>
+                                                        <div class="w-1.5 h-1.5 bg-white rounded-full" style="animation: cursorBlink 1s infinite;"></div>
+                                                        <span class="font-mono text-xs text-white/60">RENDERING</span>
                                                     </div>
                                                     
                                                     <!-- Mock Content -->
@@ -2167,9 +2585,9 @@
                                                         
                                                         <!-- Feature Cards -->
                                                         <div class="grid grid-cols-3 gap-6 mt-16 opacity-0 preview-element" style="animation: fadeInDesign 0.6s ease-out 0.9s forwards;">
-                                                            <div class="border border-white/10 bg-white/5 backdrop-blur-sm p-6 rounded-lg hover:border-emerald-500/50 hover:bg-white/10 hover:scale-105 transition-all duration-500 cursor-pointer group shadow-lg shadow-black/20">
-                                                                <div class="w-12 h-12 bg-emerald-500/20 rounded-lg mb-4 flex items-center justify-center group-hover:bg-emerald-500/40 group-hover:shadow-lg group-hover:shadow-emerald-500/30 transition-all duration-500">
-                                                                    <div class="w-6 h-6 bg-emerald-400/70 rounded group-hover:rotate-12 transition-transform duration-500"></div>
+                                                            <div class="border border-white/10 bg-white/5 backdrop-blur-sm p-6 rounded-lg hover:border-white/30 hover:bg-white/10 hover:scale-105 transition-all duration-500 cursor-pointer group shadow-lg shadow-black/20">
+                                                                <div class="w-12 h-12 bg-white/20 rounded-lg mb-4 flex items-center justify-center group-hover:bg-white/40 group-hover:shadow-lg group-hover:shadow-white/30 transition-all duration-500">
+                                                                    <div class="w-6 h-6 bg-white/70 rounded group-hover:rotate-12 transition-transform duration-500"></div>
                                                                 </div>
                                                                 <div class="h-3 bg-white/30 rounded mb-3 group-hover:bg-white/40 transition-colors" style="width: 70%;"></div>
                                                                 <div class="space-y-2">
@@ -2177,9 +2595,9 @@
                                                                     <div class="h-2 bg-white/15 rounded group-hover:bg-white/20 transition-colors" style="width: 75%;"></div>
                                                                 </div>
                                                             </div>
-                                                            <div class="border border-white/10 bg-white/5 backdrop-blur-sm p-6 rounded-lg hover:border-blue-500/50 hover:bg-white/10 hover:scale-105 transition-all duration-500 cursor-pointer group shadow-lg shadow-black/20">
-                                                                <div class="w-12 h-12 bg-blue-500/20 rounded-lg mb-4 flex items-center justify-center group-hover:bg-blue-500/40 group-hover:shadow-lg group-hover:shadow-blue-500/30 transition-all duration-500">
-                                                                    <div class="w-6 h-6 bg-blue-400/70 rounded group-hover:rotate-12 transition-transform duration-500"></div>
+                                                            <div class="border border-white/10 bg-white/5 backdrop-blur-sm p-6 rounded-lg hover:border-white/30 hover:bg-white/10 hover:scale-105 transition-all duration-500 cursor-pointer group shadow-lg shadow-black/20">
+                                                                <div class="w-12 h-12 bg-white/20 rounded-lg mb-4 flex items-center justify-center group-hover:bg-white/40 group-hover:shadow-lg group-hover:shadow-white/30 transition-all duration-500">
+                                                                    <div class="w-6 h-6 bg-white/70 rounded group-hover:rotate-12 transition-transform duration-500"></div>
                                                                 </div>
                                                                 <div class="h-3 bg-white/30 rounded mb-3 group-hover:bg-white/40 transition-colors" style="width: 65%;"></div>
                                                                 <div class="space-y-2">
@@ -2187,9 +2605,9 @@
                                                                     <div class="h-2 bg-white/15 rounded group-hover:bg-white/20 transition-colors" style="width: 80%;"></div>
                                                                 </div>
                                                             </div>
-                                                            <div class="border border-white/10 bg-white/5 backdrop-blur-sm p-6 rounded-lg hover:border-purple-500/50 hover:bg-white/10 hover:scale-105 transition-all duration-500 cursor-pointer group shadow-lg shadow-black/20">
-                                                                <div class="w-12 h-12 bg-purple-500/20 rounded-lg mb-4 flex items-center justify-center group-hover:bg-purple-500/40 group-hover:shadow-lg group-hover:shadow-purple-500/30 transition-all duration-500">
-                                                                    <div class="w-6 h-6 bg-purple-400/70 rounded group-hover:rotate-12 transition-transform duration-500"></div>
+                                                            <div class="border border-white/10 bg-white/5 backdrop-blur-sm p-6 rounded-lg hover:border-white/30 hover:bg-white/10 hover:scale-105 transition-all duration-500 cursor-pointer group shadow-lg shadow-black/20">
+                                                                <div class="w-12 h-12 bg-white/20 rounded-lg mb-4 flex items-center justify-center group-hover:bg-white/40 group-hover:shadow-lg group-hover:shadow-white/30 transition-all duration-500">
+                                                                    <div class="w-6 h-6 bg-white/70 rounded group-hover:rotate-12 transition-transform duration-500"></div>
                                                                 </div>
                                                                 <div class="h-3 bg-white/30 rounded mb-3 group-hover:bg-white/40 transition-colors" style="width: 75%;"></div>
                                                                 <div class="space-y-2">
@@ -2296,17 +2714,17 @@
                                                 </div>
                                                 <div class="bg-[#030303] p-12 space-y-8">
                                                     <div class="group cursor-pointer">
-                                                        <div class="font-display text-7xl font-bold tracking-tight text-white mb-2 group-hover:text-emerald-400 transition-colors duration-500">Display XL</div>
+                                                        <div class="font-display text-7xl font-bold tracking-tight text-white mb-2 group-hover:text-neutral-300 transition-colors duration-500">Display XL</div>
                                                         <div class="font-mono text-xs text-neutral-600">96px / -0.02em / Space Grotesk Bold</div>
                                                     </div>
                                                     <div class="h-px bg-gradient-to-r from-white/0 via-white/20 to-white/0"></div>
                                                     <div class="group cursor-pointer">
-                                                        <div class="font-display text-5xl font-medium tracking-tight text-white mb-2 group-hover:text-blue-400 transition-colors duration-500">Heading 1</div>
+                                                        <div class="font-display text-5xl font-medium tracking-tight text-white mb-2 group-hover:text-neutral-300 transition-colors duration-500">Heading 1</div>
                                                         <div class="font-mono text-xs text-neutral-600">48px / -0.01em / Space Grotesk Medium</div>
                                                     </div>
                                                     <div class="h-px bg-gradient-to-r from-white/0 via-white/10 to-white/0"></div>
                                                     <div class="group cursor-pointer">
-                                                        <div class="font-display text-3xl font-medium text-white mb-2 group-hover:text-purple-400 transition-colors duration-500">Heading 2</div>
+                                                        <div class="font-display text-3xl font-medium text-white mb-2 group-hover:text-neutral-300 transition-colors duration-500">Heading 2</div>
                                                         <div class="font-mono text-xs text-neutral-600">32px / -0.01em / Space Grotesk Medium</div>
                                                     </div>
                                                     <div class="h-px bg-gradient-to-r from-white/0 via-white/10 to-white/0"></div>
@@ -2326,18 +2744,18 @@
                                                 <div class="border border-white/10 p-8 opacity-0 design-element" style="animation: fadeInDesign 0.8s ease-out 0.4s forwards;">
                                                     <div class="font-mono text-xs text-neutral-600 mb-6 uppercase tracking-widest">Font Pairing</div>
                                                     <div class="space-y-6">
-                                                        <div class="text-center p-6 border border-white/5 bg-white/5 hover:border-emerald-500/50 hover:bg-white/10 transition-all duration-500 group cursor-pointer">
-                                                            <div class="font-display text-5xl mb-3 group-hover:scale-110 transition-transform duration-500 group-hover:text-emerald-400">Aa</div>
+                                                        <div class="text-center p-6 border border-white/5 bg-white/5 hover:border-white/30 hover:bg-white/10 transition-all duration-500 group cursor-pointer">
+                                                            <div class="font-display text-5xl mb-3 group-hover:scale-110 transition-transform duration-500 group-hover:text-neutral-200">Aa</div>
                                                             <div class="text-sm text-white mb-1">Space Grotesk</div>
                                                             <div class="font-mono text-[10px] text-neutral-600">Display & Headlines</div>
                                                         </div>
-                                                        <div class="text-center p-6 border border-white/5 bg-white/5 hover:border-blue-500/50 hover:bg-white/10 transition-all duration-500 group cursor-pointer">
-                                                            <div class="font-sans text-5xl mb-3 group-hover:scale-110 transition-transform duration-500 group-hover:text-blue-400">Aa</div>
+                                                        <div class="text-center p-6 border border-white/5 bg-white/5 hover:border-white/30 hover:bg-white/10 transition-all duration-500 group cursor-pointer">
+                                                            <div class="font-sans text-5xl mb-3 group-hover:scale-110 transition-transform duration-500 group-hover:text-neutral-200">Aa</div>
                                                             <div class="text-sm text-white mb-1">Inter</div>
                                                             <div class="font-mono text-[10px] text-neutral-600">Body & Interface</div>
                                                         </div>
-                                                        <div class="text-center p-6 border border-white/5 bg-white/5 hover:border-purple-500/50 hover:bg-white/10 transition-all duration-500 group cursor-pointer">
-                                                            <div class="font-mono text-5xl mb-3 group-hover:scale-110 transition-transform duration-500 group-hover:text-purple-400">Aa</div>
+                                                        <div class="text-center p-6 border border-white/5 bg-white/5 hover:border-white/30 hover:bg-white/10 transition-all duration-500 group cursor-pointer">
+                                                            <div class="font-mono text-5xl mb-3 group-hover:scale-110 transition-transform duration-500 group-hover:text-neutral-200">Aa</div>
                                                             <div class="text-sm text-white mb-1">Monospace</div>
                                                             <div class="font-mono text-[10px] text-neutral-600">Code & Data</div>
                                                         </div>
@@ -2362,7 +2780,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="flex items-center gap-4 group cursor-pointer">
-                                                            <div class="w-16 h-16 bg-emerald-500 border-2 border-white/20 rounded-lg group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-emerald-500/50 transition-all duration-300"></div>
+                                                            <div class="w-16 h-16 bg-white border-2 border-white/20 rounded-lg group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-white/50 transition-all duration-300"></div>
                                                             <div>
                                                                 <div class="font-mono text-xs text-white">#10B981</div>
                                                                 <div class="font-mono text-[10px] text-neutral-600">Accent</div>
@@ -2405,39 +2823,39 @@
                                                     </button>
                                                 </div>
                                                 <div class="bg-[#030303] p-8 space-y-6">
-                                                    <div class="border border-white/10 p-6 hover:border-emerald-500/50 bg-white/5 hover:bg-white/10 transition-all duration-500 group cursor-pointer" onclick="triggerMotionDemo()">
+                                                    <div class="border border-white/10 p-6 hover:border-white/30 bg-white/5 hover:bg-white/10 transition-all duration-500 group cursor-pointer" onclick="triggerMotionDemo()">
                                                         <div class="flex justify-between items-center mb-4">
                                                             <div class="font-mono text-sm text-white">ease-out</div>
                                                             <div class="font-mono text-xs text-neutral-600">cubic-bezier(0, 0, 0.2, 1)</div>
                                                         </div>
                                                         <div class="relative h-14 bg-white/5 overflow-hidden rounded-lg border border-white/10">
-                                                            <div class="absolute left-0 top-0 bottom-0 w-14 bg-gradient-to-r from-emerald-500 to-emerald-600 motion-demo-ease-out shadow-lg shadow-emerald-500/50 rounded-lg flex items-center justify-center">
+                                                            <div class="absolute left-0 top-0 bottom-0 w-14 bg-gradient-to-r from-white to-neutral-400 motion-demo-ease-out shadow-lg shadow-white/50 rounded-lg flex items-center justify-center">
                                                                 <div class="w-2 h-2 bg-white rounded-full"></div>
                                                             </div>
                                                         </div>
                                                         <div class="mt-3 text-xs text-neutral-500">Quick start, smooth finish — Perfect for exits and reveals</div>
                                                     </div>
 
-                                                    <div class="border border-white/10 p-6 hover:border-blue-500/50 bg-white/5 hover:bg-white/10 transition-all duration-500 group cursor-pointer" onclick="triggerMotionDemo()">
+                                                    <div class="border border-white/10 p-6 hover:border-white/30 bg-white/5 hover:bg-white/10 transition-all duration-500 group cursor-pointer" onclick="triggerMotionDemo()">
                                                         <div class="flex justify-between items-center mb-4">
                                                             <div class="font-mono text-sm text-white">spring</div>
                                                             <div class="font-mono text-xs text-neutral-600">cubic-bezier(0.16, 1, 0.3, 1)</div>
                                                         </div>
                                                         <div class="relative h-14 bg-white/5 overflow-hidden rounded-lg border border-white/10">
-                                                            <div class="absolute left-0 top-0 bottom-0 w-14 bg-gradient-to-r from-blue-500 to-blue-600 motion-demo-spring shadow-lg shadow-blue-500/50 rounded-lg flex items-center justify-center">
+                                                            <div class="absolute left-0 top-0 bottom-0 w-14 bg-gradient-to-r from-neutral-300 to-neutral-500 motion-demo-spring shadow-lg shadow-white/50 rounded-lg flex items-center justify-center">
                                                                 <div class="w-2 h-2 bg-white rounded-full"></div>
                                                             </div>
                                                         </div>
                                                         <div class="mt-3 text-xs text-neutral-500">Elastic energy — Adds personality to interactions</div>
                                                     </div>
 
-                                                    <div class="border border-white/10 p-6 hover:border-purple-500/50 bg-white/5 hover:bg-white/10 transition-all duration-500 group cursor-pointer" onclick="triggerMotionDemo()">
+                                                    <div class="border border-white/10 p-6 hover:border-white/30 bg-white/5 hover:bg-white/10 transition-all duration-500 group cursor-pointer" onclick="triggerMotionDemo()">
                                                         <div class="flex justify-between items-center mb-4">
                                                             <div class="font-mono text-sm text-white">ease-in-out</div>
                                                             <div class="font-mono text-xs text-neutral-600">cubic-bezier(0.4, 0, 0.2, 1)</div>
                                                         </div>
                                                         <div class="relative h-14 bg-white/5 overflow-hidden rounded-lg border border-white/10">
-                                                            <div class="absolute left-0 top-0 bottom-0 w-14 bg-gradient-to-r from-purple-500 to-purple-600 motion-demo-ease-in-out shadow-lg shadow-purple-500/50 rounded-lg flex items-center justify-center">
+                                                            <div class="absolute left-0 top-0 bottom-0 w-14 bg-gradient-to-r from-neutral-400 to-neutral-600 motion-demo-ease-in-out shadow-lg shadow-white/50 rounded-lg flex items-center justify-center">
                                                                 <div class="w-2 h-2 bg-white rounded-full"></div>
                                                             </div>
                                                         </div>
@@ -2454,28 +2872,28 @@
                                                         <div class="font-display text-3xl text-white mb-2 group-hover:scale-110 transition-transform duration-150">150ms</div>
                                                         <div class="font-mono text-[10px] text-neutral-600 uppercase">Instant</div>
                                                         <div class="mt-3 h-1 bg-white/10 rounded-full overflow-hidden">
-                                                            <div class="h-full bg-emerald-500 w-1/4"></div>
+                                                            <div class="h-full bg-white w-1/4"></div>
                                                         </div>
                                                     </div>
                                                     <div class="text-center p-6 border border-white/5 bg-white/10 hover:border-white/30 hover:bg-white/15 transition-all duration-300 group cursor-pointer">
                                                         <div class="font-display text-3xl text-white mb-2 group-hover:scale-110 transition-transform duration-300">300ms</div>
                                                         <div class="font-mono text-[10px] text-neutral-400 uppercase">Base</div>
                                                         <div class="mt-3 h-1 bg-white/10 rounded-full overflow-hidden">
-                                                            <div class="h-full bg-blue-500 w-1/2"></div>
+                                                            <div class="h-full bg-white w-1/2"></div>
                                                         </div>
                                                     </div>
                                                     <div class="text-center p-6 border border-white/5 bg-white/5 hover:border-white/20 hover:bg-white/10 transition-all duration-500 group cursor-pointer">
                                                         <div class="font-display text-3xl text-white mb-2 group-hover:scale-110 transition-transform duration-500">500ms</div>
                                                         <div class="font-mono text-[10px] text-neutral-600 uppercase">Smooth</div>
                                                         <div class="mt-3 h-1 bg-white/10 rounded-full overflow-hidden">
-                                                            <div class="h-full bg-purple-500 w-3/4"></div>
+                                                            <div class="h-full bg-white w-3/4"></div>
                                                         </div>
                                                     </div>
                                                     <div class="text-center p-6 border border-white/5 bg-white/5 hover:border-white/20 hover:bg-white/10 transition-all duration-700 group cursor-pointer">
                                                         <div class="font-display text-3xl text-white mb-2 group-hover:scale-110 transition-transform duration-700">700ms</div>
                                                         <div class="font-mono text-[10px] text-neutral-600 uppercase">Cinematic</div>
                                                         <div class="mt-3 h-1 bg-white/10 rounded-full overflow-hidden">
-                                                            <div class="h-full bg-orange-500 w-full"></div>
+                                                            <div class="h-full bg-white w-full"></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2485,22 +2903,22 @@
                                             <div class="border border-white/10 p-12 bg-gradient-to-br from-white/5 to-transparent opacity-0 design-element" style="animation: fadeInDesign 0.8s ease-out 0.6s forwards;">
                                                 <div class="font-mono text-xs text-neutral-600 mb-8 uppercase tracking-widest">Interactive Example</div>
                                                 <div class="grid grid-cols-3 gap-6">
-                                                    <div class="aspect-square border-2 border-emerald-500/30 bg-emerald-500/5 rounded-2xl hover:border-emerald-500 hover:bg-emerald-500/20 hover:scale-110 hover:rotate-3 transition-all duration-500 cursor-pointer flex items-center justify-center group">
+                                                    <div class="aspect-square border-2 border-white/30 bg-white/5 rounded-2xl hover:border-white hover:bg-white/20 hover:scale-110 hover:rotate-3 transition-all duration-500 cursor-pointer flex items-center justify-center group">
                                                         <div class="text-center">
-                                                            <div class="w-16 h-16 bg-emerald-500/30 rounded-full mx-auto mb-3 group-hover:bg-emerald-500/60 transition-all duration-500"></div>
-                                                            <div class="font-mono text-xs text-emerald-400">Hover me</div>
+                                                            <div class="w-16 h-16 bg-white/30 rounded-full mx-auto mb-3 group-hover:bg-white/60 transition-all duration-500"></div>
+                                                            <div class="font-mono text-xs text-white">Hover me</div>
                                                         </div>
                                                     </div>
-                                                    <div class="aspect-square border-2 border-blue-500/30 bg-blue-500/5 rounded-2xl hover:border-blue-500 hover:bg-blue-500/20 hover:scale-110 hover:-rotate-3 transition-all duration-500 cursor-pointer flex items-center justify-center group">
+                                                    <div class="aspect-square border-2 border-white/30 bg-white/5 rounded-2xl hover:border-white hover:bg-white/20 hover:scale-110 hover:-rotate-3 transition-all duration-500 cursor-pointer flex items-center justify-center group">
                                                         <div class="text-center">
-                                                            <div class="w-16 h-16 bg-blue-500/30 rounded-full mx-auto mb-3 group-hover:bg-blue-500/60 transition-all duration-500"></div>
-                                                            <div class="font-mono text-xs text-blue-400">And me</div>
+                                                            <div class="w-16 h-16 bg-white/30 rounded-full mx-auto mb-3 group-hover:bg-white/60 transition-all duration-500"></div>
+                                                            <div class="font-mono text-xs text-white">And me</div>
                                                         </div>
                                                     </div>
-                                                    <div class="aspect-square border-2 border-purple-500/30 bg-purple-500/5 rounded-2xl hover:border-purple-500 hover:bg-purple-500/20 hover:scale-110 hover:rotate-6 transition-all duration-500 cursor-pointer flex items-center justify-center group">
+                                                    <div class="aspect-square border-2 border-white/30 bg-white/5 rounded-2xl hover:border-white hover:bg-white/20 hover:scale-110 hover:rotate-6 transition-all duration-500 cursor-pointer flex items-center justify-center group">
                                                         <div class="text-center">
-                                                            <div class="w-16 h-16 bg-purple-500/30 rounded-full mx-auto mb-3 group-hover:bg-purple-500/60 transition-all duration-500"></div>
-                                                            <div class="font-mono text-xs text-purple-400">Try me</div>
+                                                            <div class="w-16 h-16 bg-white/30 rounded-full mx-auto mb-3 group-hover:bg-white/60 transition-all duration-500"></div>
+                                                            <div class="font-mono text-xs text-white">Try me</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2737,6 +3155,7 @@
 
             modal.classList.add('active');
             document.body.classList.add('modal-open');
+            lockBodyScroll();
             lucide.createIcons();
         }
 
@@ -3461,7 +3880,7 @@
             const visualSteps = [
                 { html: '<div class="text-4xl font-bold text-gray-900 opacity-0 transition-opacity duration-500">Innovation Starts Here</div>', delay: 1600 },
                 { html: '<button class="mt-4 bg-black text-white px-6 py-3 rounded opacity-0 transition-opacity duration-500 hover:bg-gray-800">Get Started</button>', delay: 2800 },
-                { html: '<div class="mt-6 w-full h-32 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg opacity-0 transition-opacity duration-500"></div>', delay: 4800 }
+                { html: '<div class="mt-6 w-full h-32 bg-gradient-to-r from-white to-neutral-500 rounded-lg opacity-0 transition-opacity duration-500"></div>', delay: 4800 }
             ];
 
             const codeContainer = document.getElementById('code-lines');
@@ -3913,6 +4332,30 @@
 
         closeModal.addEventListener('click', closeModalFunc);
         
+        // Helper functions for body scroll lock
+        function lockBodyScroll() {
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+            document.body.style.overflow = 'hidden';
+            document.body.style.paddingRight = scrollbarWidth + 'px';
+        }
+        
+        function unlockBodyScroll() {
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }
+        
+        // Prevent body scroll when modal is open
+        function lockBodyScroll() {
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+            document.body.style.overflow = 'hidden';
+            document.body.style.paddingRight = scrollbarWidth + 'px';
+        }
+        
+        function unlockBodyScroll() {
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }
+        
         // Close on backdrop click
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModalFunc();
@@ -3924,6 +4367,326 @@
                 closeModalFunc();
             }
         });
+
+
+        // --- CHATBOT SYSTEM ---
+        const GEMINI_API_KEY = 'AIzaSyBc5hZhMfMhmQRAz-vwfyXp4EM_ZLNYElg';
+        const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+        
+        const chatbotToggle = document.getElementById('chatbot-toggle');
+        const chatbotWindow = document.getElementById('chatbot-window');
+        const chatbotClose = document.getElementById('chatbot-close');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        const chatBadge = document.querySelector('.chat-badge');
+        
+        let chatHistory = [];
+        let isProcessing = false;
+        
+        // System context for AI
+        const SYSTEM_CONTEXT = `You are a helpful digital assistant for Sulayman Bowles' portfolio website. Your role is to guide visitors and answer their questions.
+
+CONTEXT ABOUT SULAYMAN BOWLES:
+• Based in Austin, TX | UT Austin '28
+• Specializes in: Financial Consulting, Website Design, Data Science
+• Core philosophy: "Finance. Code. Entropy. A system of evidence."
+• Contact: sulayman.bowles@gmail.com
+
+PRIMARY SERVICES:
+**Financial Consulting**
+- DCF modeling & valuation analysis
+- Investment thesis development
+- Strategic planning & scenario testing
+- Risk assessment frameworks
+- M&A due diligence
+
+**Website Design & Development**
+- Custom web design & development
+- Interactive experiences & generative art
+- E-commerce platforms
+- Brand identity & portfolios
+- Web3/blockchain interfaces
+
+NOTABLE PROJECTS:
+• Bittensor – Decentralized AI network research & analysis
+• OpenAI – Content strategy & business analysis
+• Taskformer – Strategic consulting & systems optimization
+• Viberary – Creative web development & UX design
+
+YOUR BEHAVIOR:
+- Be warm, professional, and concise (under 80 words)
+- Help visitors navigate the portfolio and understand services
+- For project inquiries, encourage direct contact via email
+- Provide specific answers about work, capabilities, and process
+- Use markdown: **bold** for emphasis, *italic* for examples
+- Match the sophisticated, minimalist tone of the site
+
+You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
+
+        // Load chat history from sessionStorage
+        function loadChatHistory() {
+            const saved = sessionStorage.getItem('chatHistory');
+            if (saved) {
+                chatHistory = JSON.parse(saved);
+                chatHistory.forEach(msg => renderMessage(msg.role, msg.content, msg.timestamp, false));
+                scrollToBottom();
+            } else {
+                // Welcome message
+                const welcomeMsg = {
+                    role: 'ai',
+                    content: 'Hello! I can help you explore Sulayman\'s work in **financial consulting** and **website design**. What would you like to know?',
+                    timestamp: Date.now()
+                };
+                chatHistory.push(welcomeMsg);
+                renderMessage('ai', welcomeMsg.content, welcomeMsg.timestamp, true);
+                saveChatHistory();
+            }
+        }
+        
+        // Save chat history
+        function saveChatHistory() {
+            sessionStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+        }
+        
+        // Render message
+        function renderMessage(role, content, timestamp, animate = true) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${role}`;
+            if (!animate) messageDiv.style.animation = 'none';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'chat-avatar';
+            avatar.innerHTML = role === 'user' 
+                ? '<i data-lucide="user" class="w-4 h-4 text-black"></i>'
+                : '<i data-lucide="sparkles" class="w-4 h-4 text-neutral-400"></i>';
+            
+            const bubbleContainer = document.createElement('div');
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble';
+            bubble.innerHTML = formatMessage(content);
+            
+            const time = document.createElement('div');
+            time.className = 'chat-timestamp';
+            time.textContent = formatTime(timestamp);
+            
+            bubbleContainer.appendChild(bubble);
+            bubbleContainer.appendChild(time);
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(bubbleContainer);
+            
+            chatMessages.appendChild(messageDiv);
+            lucide.createIcons();
+            
+            if (animate) {
+                setTimeout(scrollToBottom, 100);
+            }
+        }
+        
+        // Format message with basic markdown
+        function formatMessage(text) {
+            return text
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                .replace(/`(.+?)`/g, '<code style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 3px;">$1</code>')
+                .replace(/\n/g, '<br>');
+        }
+        
+        // Format timestamp
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Scroll to bottom
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Show typing indicator
+        function showTypingIndicator() {
+            const indicator = document.createElement('div');
+            indicator.className = 'chat-message ai typing-indicator-msg';
+            indicator.innerHTML = `
+                <div class="chat-avatar">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-neutral-400"></i>
+                </div>
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            chatMessages.appendChild(indicator);
+            lucide.createIcons();
+            scrollToBottom();
+            return indicator;
+        }
+        
+        // Send message to Gemini API
+        async function sendToGemini(userMessage) {
+            try {
+                // Build conversation context (last 3 messages for continuity)
+                const recentHistory = chatHistory.slice(-3).filter(msg => msg.role).map(msg => 
+                    `${msg.role === 'user' ? 'Visitor' : 'Assistant'}: ${msg.content}`
+                ).join('\n');
+                
+                const conversationContext = recentHistory ? `\n\nRecent conversation:\n${recentHistory}\n` : '';
+                
+                const prompt = `${SYSTEM_CONTEXT}${conversationContext}\n---\n\nVisitor question: ${userMessage}\n\nYour response (helpful, conversational, under 80 words):`;
+                
+                const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.8,
+                            maxOutputTokens: 150,
+                            topP: 0.95
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error('API Error Response:', response.status, errorData);
+                    
+                    if (response.status === 400) {
+                        throw new Error('Invalid request - please try a different question');
+                    } else if (response.status === 403) {
+                        throw new Error('API key issue - please contact support');
+                    } else if (response.status === 429) {
+                        throw new Error('Too many requests - please wait a moment');
+                    }
+                    throw new Error(`API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('API Response:', data);
+                
+                if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) {
+                    return data.candidates[0].content.parts[0].text;
+                } else if (data.error) {
+                    console.error('API returned error:', data.error);
+                    throw new Error(data.error.message || 'API error');
+                } else {
+                    console.error('Unexpected API response structure:', data);
+                    throw new Error('Unexpected response format');
+                }
+            } catch (error) {
+                console.error('Gemini API Error:', error);
+                
+                if (error.message.includes('fetch')) {
+                    return 'Unable to connect to the AI service. Please check your internet connection and try again.';
+                } else if (error.message.includes('API key')) {
+                    return 'There\'s a configuration issue. Please contact **sulayman.bowles@gmail.com** for assistance.';
+                } else if (error.message.includes('Too many requests')) {
+                    return 'I\'m getting a lot of questions right now. Please wait 30 seconds and try again.';
+                }
+                
+                return `I encountered an issue: ${error.message}. Please try again or reach out at **sulayman.bowles@gmail.com**.`;
+            }
+        }
+        
+        // Handle send message
+        async function handleSendMessage() {
+            const message = chatInput.value.trim();
+            if (!message || isProcessing) return;
+            
+            isProcessing = true;
+            chatSend.disabled = true;
+            chatInput.disabled = true;
+            
+            // Add user message
+            const userMsg = {
+                role: 'user',
+                content: message,
+                timestamp: Date.now()
+            };
+            chatHistory.push(userMsg);
+            renderMessage('user', message, userMsg.timestamp, true);
+            saveChatHistory();
+            
+            chatInput.value = '';
+            
+            // Show typing indicator
+            const typingIndicator = showTypingIndicator();
+            
+            // Get AI response
+            const aiResponse = await sendToGemini(message);
+            
+            // Remove typing indicator
+            typingIndicator.remove();
+            
+            // Add AI message
+            const aiMsg = {
+                role: 'ai',
+                content: aiResponse,
+                timestamp: Date.now()
+            };
+            chatHistory.push(aiMsg);
+            renderMessage('ai', aiResponse, aiMsg.timestamp, true);
+            saveChatHistory();
+            
+            isProcessing = false;
+            chatSend.disabled = false;
+            chatInput.disabled = false;
+            chatInput.focus();
+        }
+        
+        // Toggle chatbot
+        chatbotToggle.addEventListener('click', () => {
+            const isActive = chatbotWindow.classList.toggle('active');
+            chatbotToggle.classList.toggle('active', isActive);
+            chatbotToggle.setAttribute('aria-expanded', isActive);
+            
+            if (isActive) {
+                chatInput.focus();
+                chatBadge.style.display = 'none';
+                if (chatHistory.length === 0) {
+                    loadChatHistory();
+                }
+            }
+        });
+        
+        // Close chatbot
+        chatbotClose.addEventListener('click', () => {
+            chatbotWindow.classList.remove('active');
+            chatbotToggle.classList.remove('active');
+            chatbotToggle.setAttribute('aria-expanded', 'false');
+        });
+        
+        // Send message
+        chatSend.addEventListener('click', handleSendMessage);
+        
+        // Enter to send
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage();
+            }
+        });
+        
+        // ESC to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && chatbotWindow.classList.contains('active')) {
+                chatbotClose.click();
+            }
+        });
+        
+        // Initialize on load
+        setTimeout(() => {
+            loadChatHistory();
+        }, 2000);
 
 
         // --- 5. LOAD SEQUENCE ---
