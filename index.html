@@ -384,7 +384,7 @@
         @keyframes fadeInRow {
             from {
                 opacity: 0;
-                transform: translateY(8px);
+                transform: translateY(2px);
             }
             to {
                 opacity: 1;
@@ -925,6 +925,7 @@
             height: 100%;
             opacity: 0.6;
             transition: opacity 0.5s ease;
+            will-change: opacity;
         }
         .group:hover .gen-canvas { opacity: 1; }
 
@@ -4700,11 +4701,11 @@
             
             // Header row (always visible)
             const headerRow = `
-                <div class="grid grid-cols-12 gap-px bg-[#030303] border-b border-white/20 sticky top-0 z-10">
-                    <div class="col-span-1 p-3 text-neutral-600 text-center text-xs font-mono">#</div>
-                    <div class="col-span-7 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider">Line Item</div>
-                    <div class="col-span-2 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider text-right">FY 2024</div>
-                    <div class="col-span-2 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider text-right">% Rev</div>
+                <div class="grid grid-cols-12 gap-px border-b border-white/20 sticky top-0 z-30" style="background-color: #030303;">
+                    <div class="col-span-1 p-3 text-neutral-600 text-center text-xs font-mono" style="background-color: #030303;">#</div>
+                    <div class="col-span-7 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider" style="background-color: #030303;">Line Item</div>
+                    <div class="col-span-2 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider text-right" style="background-color: #030303;">FY 2024</div>
+                    <div class="col-span-2 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider text-right" style="background-color: #030303;">% Rev</div>
                 </div>
             `;
             
@@ -4743,7 +4744,7 @@
                     const indent = row.sublevel ? 'pl-6' : '';
                     
                     const rowHTML = `
-                        <div class="grid grid-cols-12 gap-px ${rowBg} transition-all duration-500 ${borderClass} ${finalBorder} opacity-0 translate-y-2" data-cell="${row.cell}" style="animation: fadeInRow 0.5s ease-out ${index * 0.05}s forwards;">
+                        <div class="grid grid-cols-12 gap-px ${rowBg} transition-all duration-300 ease-out ${borderClass} ${finalBorder} opacity-0 translate-y-2" data-cell="${row.cell}" style="animation: fadeInRow 0.3s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.02}s forwards;">
                             <div class="col-span-1 ${padding} text-neutral-700 text-center text-xs font-mono ${numWeight}">${row.num}</div>
                             <div class="col-span-7 ${padding} ${textColor} ${fontSize} ${labelWeight} ${indent}">${row.label}</div>
                             <div class="col-span-2 ${padding} ${textColor} ${fontSize} ${valueWeight} text-right font-mono">${row.value}</div>
@@ -4752,7 +4753,7 @@
                     `;
                     
                     container.insertAdjacentHTML('beforeend', rowHTML);
-                }, index * 60);
+                }, index * 20);
             });
         }
 
@@ -4761,11 +4762,11 @@
             if (!container) return;
             
             const headerRow = `
-                <div class="grid grid-cols-12 gap-px bg-[#030303] border-b border-white/20 sticky top-0 z-10">
-                    <div class="col-span-1 p-3 text-neutral-600 text-center text-xs font-mono">#</div>
-                    <div class="col-span-7 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider">Account</div>
-                    <div class="col-span-2 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider text-right">Amount</div>
-                    <div class="col-span-2 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider text-right">% Total</div>
+                <div class="grid grid-cols-12 gap-px border-b border-white/20 sticky top-0 z-30" style="background-color: #030303;">
+                    <div class="col-span-1 p-3 text-neutral-600 text-center text-xs font-mono" style="background-color: #030303;">#</div>
+                    <div class="col-span-7 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider" style="background-color: #030303;">Account</div>
+                    <div class="col-span-2 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider text-right" style="background-color: #030303;">Amount</div>
+                    <div class="col-span-2 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider text-right" style="background-color: #030303;">% Total</div>
                 </div>
             `;
             
@@ -4807,7 +4808,7 @@
                     const indent = row.sublevel ? 'pl-6' : '';
                     
                     const rowHTML = `
-                        <div class="grid grid-cols-12 gap-px ${rowBg} transition-all duration-500 ${borderClass} ${finalBorder} opacity-0 translate-y-2" data-cell="${row.cell}" style="animation: fadeInRow 0.5s ease-out ${index * 0.05}s forwards;">
+                        <div class="grid grid-cols-12 gap-px ${rowBg} transition-all duration-300 ease-out ${borderClass} ${finalBorder} opacity-0 translate-y-2" data-cell="${row.cell}" style="animation: fadeInRow 0.3s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.02}s forwards;">
                             <div class="col-span-1 ${padding} text-neutral-700 text-center text-xs font-mono ${numWeight}">${row.num}</div>
                             <div class="col-span-7 ${padding} ${textColor} ${fontSize} ${labelWeight} ${indent}">${row.label}</div>
                             <div class="col-span-2 ${padding} ${textColor} ${fontSize} ${valueWeight} text-right font-mono">${row.value}</div>
@@ -4816,7 +4817,7 @@
                     `;
                     
                     container.insertAdjacentHTML('beforeend', rowHTML);
-                }, index * 60);
+                }, index * 20);
             });
         }
 
@@ -4825,11 +4826,11 @@
             if (!container) return;
             
             const headerRow = `
-                <div class="grid grid-cols-12 gap-px bg-[#030303] border-b border-white/20 sticky top-0 z-10">
-                    <div class="col-span-1 p-3 text-neutral-600 text-center text-xs font-mono">#</div>
-                    <div class="col-span-7 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider">Cash Flow Activity</div>
-                    <div class="col-span-2 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider text-right">FY 2024</div>
-                    <div class="col-span-2 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider text-right">% Rev</div>
+                <div class="grid grid-cols-12 gap-px border-b border-white/20 sticky top-0 z-30" style="background-color: #030303;">
+                    <div class="col-span-1 p-3 text-neutral-600 text-center text-xs font-mono" style="background-color: #030303;">#</div>
+                    <div class="col-span-7 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider" style="background-color: #030303;">Cash Flow Activity</div>
+                    <div class="col-span-2 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider text-right" style="background-color: #030303;">FY 2024</div>
+                    <div class="col-span-2 p-3 text-neutral-400 text-xs font-mono uppercase tracking-wider text-right" style="background-color: #030303;">% Rev</div>
                 </div>
             `;
             
@@ -4867,7 +4868,7 @@
                     const indent = row.sublevel ? 'pl-6' : '';
                     
                     const rowHTML = `
-                        <div class="grid grid-cols-12 gap-px ${rowBg} transition-all duration-500 ${borderClass} ${finalBorder} opacity-0 translate-y-2" data-cell="${row.cell}" style="animation: fadeInRow 0.5s ease-out ${index * 0.05}s forwards;">
+                        <div class="grid grid-cols-12 gap-px ${rowBg} transition-all duration-300 ease-out ${borderClass} ${finalBorder} opacity-0 translate-y-2" data-cell="${row.cell}" style="animation: fadeInRow 0.3s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.02}s forwards;">
                             <div class="col-span-1 ${padding} text-neutral-700 text-center text-xs font-mono ${numWeight}">${row.num}</div>
                             <div class="col-span-7 ${padding} ${textColor} ${fontSize} ${labelWeight} ${indent}">${row.label}</div>
                             <div class="col-span-2 ${padding} ${textColor} ${fontSize} ${valueWeight} text-right font-mono">${row.value}</div>
@@ -4876,7 +4877,7 @@
                     `;
                     
                     container.insertAdjacentHTML('beforeend', rowHTML);
-                }, index * 60);
+                }, index * 20);
             });
         }
 
@@ -6208,10 +6209,23 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                 let width, height;
                 let nodes = [];
                 let isHovered = false;
+                let isVisible = false;
+                let animationId = null;
                 
                 const parent = canvas1.parentElement;
                 parent.addEventListener('mouseenter', () => isHovered = true);
                 parent.addEventListener('mouseleave', () => isHovered = false);
+                
+                // Visibility detection
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        isVisible = entry.isIntersecting;
+                        if (isVisible && !animationId) {
+                            animate();
+                        }
+                    });
+                }, { threshold: 0.1 });
+                observer.observe(canvas1);
 
                 const createNode = () => ({
                     x: Math.random() * width,
@@ -6312,9 +6326,13 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                         });
                     });
                     ctx.globalAlpha = 1;
-                    requestAnimationFrame(animate);
+                    if (isVisible) {
+                        animationId = requestAnimationFrame(animate);
+                    } else {
+                        animationId = null;
+                    }
                 };
-                animate();
+                // Don't start immediately, let Intersection Observer trigger it
             }
 
             // 2. Payroll (Data Stream)
@@ -6323,6 +6341,8 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                 const ctx = canvas2.getContext('2d');
                 let width, height;
                 let drops = [];
+                let isVisible = false;
+                let animationId = null;
                 
                 const resize = () => {
                     width = canvas2.width = canvas2.parentElement.offsetWidth;
@@ -6338,7 +6358,18 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                     }
                 };
                 resize();
-                window.addEventListener('resize', resize);
+                window.addEventListener('resize', debounce(resize, 150));
+                
+                // Visibility detection
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        isVisible = entry.isIntersecting;
+                        if (isVisible && !animationId) {
+                            animate();
+                        }
+                    });
+                }, { threshold: 0.1 });
+                observer.observe(canvas2);
 
                 const animate = () => {
                     ctx.fillStyle = 'rgba(10, 10, 10, 0.1)'; // Trail effect
@@ -6351,9 +6382,12 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                         drop.y += drop.speed;
                         if(drop.y > height) drop.y = 0;
                     });
-                    requestAnimationFrame(animate);
+                    if (isVisible) {
+                        animationId = requestAnimationFrame(animate);
+                    } else {
+                        animationId = null;
+                    }
                 };
-                animate();
             }
 
             // 3. Point72 (Candlesticks)
@@ -6363,10 +6397,23 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                 let width, height;
                 let candles = [];
                 let isHovered = false;
+                let isVisible = false;
+                let animationId = null;
 
                 const parent = canvas3.parentElement;
                 parent.addEventListener('mouseenter', () => isHovered = true);
                 parent.addEventListener('mouseleave', () => isHovered = false);
+                
+                // Visibility detection
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        isVisible = entry.isIntersecting;
+                        if (isVisible && !animationId) {
+                            animate();
+                        }
+                    });
+                }, { threshold: 0.1 });
+                observer.observe(canvas3);
                 
                 const resize = () => {
                     width = canvas3.width = canvas3.parentElement.offsetWidth;
@@ -6390,9 +6437,13 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                 }
                 
                 resize();
-                window.addEventListener('resize', resize);
+                window.addEventListener('resize', debounce(resize, 150));
 
                 const animate = () => {
+                    if (!isVisible) {
+                        animationId = null;
+                        return;
+                    }
                     // Volatility Multiplier
                     const volMult = isHovered ? 4 : 1;
 
@@ -6440,9 +6491,16 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                     });
                     
                     ctx.restore();
-                    setTimeout(() => requestAnimationFrame(animate), 100); // Slow down
+                    if (isVisible) {
+                        animationId = setTimeout(() => {
+                            if (isVisible) {
+                                animationId = requestAnimationFrame(animate);
+                            }
+                        }, 100);
+                    } else {
+                        animationId = null;
+                    }
                 };
-                animate();
             }
             // 4. TaskFormer (Logic Gate)
             const canvas4 = document.getElementById('canvas-taskformer');
@@ -6450,6 +6508,8 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                 const ctx = canvas4.getContext('2d');
                 let width, height;
                 let pulse = 0;
+                let isVisible = false;
+                let animationId = null;
                 
                 const resize = () => {
                     width = canvas4.width = canvas4.parentElement.offsetWidth;
@@ -6494,9 +6554,12 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                     ctx.fill();
                     ctx.shadowBlur = 0;
 
-                    requestAnimationFrame(animate);
+                    if (isVisible) {
+                        animationId = requestAnimationFrame(animate);
+                    } else {
+                        animationId = null;
+                    }
                 };
-                animate();
             }
 
             // 5. Financial Service (Stock Chart/Line Graph)
@@ -6506,6 +6569,8 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                 let width, height;
                 let dataPoints = [];
                 let time = 0;
+                let isVisible = false;
+                let animationId = null;
                 
                 const resize = () => {
                     width = canvas5.width = canvas5.parentElement.offsetWidth;
@@ -6520,7 +6585,18 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                     }
                 };
                 resize();
-                window.addEventListener('resize', resize);
+                window.addEventListener('resize', debounce(resize, 150));
+                
+                // Visibility detection
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        isVisible = entry.isIntersecting;
+                        if (isVisible && !animationId) {
+                            animate();
+                        }
+                    });
+                }, { threshold: 0.1 });
+                observer.observe(canvas5);
 
                 const animate = () => {
                     ctx.clearRect(0, 0, width, height);
@@ -6575,9 +6651,12 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                     ctx.closePath();
                     ctx.fill();
                     
-                    requestAnimationFrame(animate);
+                    if (isVisible) {
+                        animationId = requestAnimationFrame(animate);
+                    } else {
+                        animationId = null;
+                    }
                 };
-                animate();
             }
 
             // 6. Website Service (Geometric Grid/Wireframe)
@@ -6586,13 +6665,26 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                 const ctx = canvas6.getContext('2d');
                 let width, height;
                 let rotation = 0;
+                let isVisible = false;
+                let animationId = null;
                 
                 const resize = () => {
                     width = canvas6.width = canvas6.parentElement.offsetWidth;
                     height = canvas6.height = canvas6.parentElement.offsetHeight;
                 };
                 resize();
-                window.addEventListener('resize', resize);
+                window.addEventListener('resize', debounce(resize, 150));
+                
+                // Visibility detection
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        isVisible = entry.isIntersecting;
+                        if (isVisible && !animationId) {
+                            animate();
+                        }
+                    });
+                }, { threshold: 0.1 });
+                observer.observe(canvas6);
 
                 const animate = () => {
                     ctx.clearRect(0, 0, width, height);
@@ -6635,9 +6727,12 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
                     
                     ctx.restore();
                     
-                    requestAnimationFrame(animate);
+                    if (isVisible) {
+                        animationId = requestAnimationFrame(animate);
+                    } else {
+                        animationId = null;
+                    }
                 };
-                animate();
             }
         }
 
@@ -6775,6 +6870,20 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
         // --- 9. THREE.JS GLOBE ---
         function initGlobe() {
             const container = document.getElementById('canvas-container');
+            let isVisible = false;
+            let animationId = null;
+            
+            // Visibility detection for globe
+            const globeObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    isVisible = entry.isIntersecting;
+                    if (isVisible && !animationId) {
+                        animate();
+                    }
+                });
+            }, { threshold: 0.1 });
+            globeObserver.observe(container);
+            
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
             camera.position.z = 6;
@@ -6855,20 +6964,23 @@ You're an assistant, not Sulayman himself. Guide, inform, and facilitate.`;
             }
 
             function animate() {
-                requestAnimationFrame(animate);
+                if (!isVisible) {
+                    animationId = null;
+                    return;
+                }
+                animationId = requestAnimationFrame(animate);
                 sphere.rotation.y += 0.001;
                 particlesMesh.rotation.y += 0.0003;
                 group.rotation.x += 0.05 * (mouseY - group.rotation.x);
                 group.rotation.y += 0.05 * (mouseX - group.rotation.y);
                 renderer.render(scene, camera);
             }
-            animate();
 
-            window.addEventListener('resize', () => {
+            window.addEventListener('resize', debounce(() => {
                 camera.aspect = container.clientWidth / container.clientHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(container.clientWidth, container.clientHeight);
-            });
+            }, 150));
         }
         initGlobe();
         // --- 6. OSCILLOSCOPE VISUALIZATION (LIQUID AUDIO) ---
