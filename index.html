@@ -202,10 +202,12 @@
         }
 
         body.modal-open #app-container {
-            transform: scale(0.95) translateY(15px);
+            transform: scale(0.95) translate3d(0, 15px, 0);
             filter: brightness(0.35) blur(2px);
             border-radius: 16px;
             pointer-events: none;
+            will-change: transform, filter;
+            backface-visibility: hidden;
         }
 
         ::selection {
@@ -219,6 +221,7 @@
             color: #0F0F0F;
             border: none;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
         }
         .modal-content.paper-mode ::selection {
             background: #0F0F0F;
@@ -226,6 +229,7 @@
         }
         .modal-content.paper-mode #reading-progress {
             background-color: #0F0F0F;
+            transition: background-color 0.3s ease;
         }
         .modal-content.paper-mode #close-modal i {
             color: #0F0F0F;
@@ -515,20 +519,24 @@
             position: fixed;
             inset: 0;
             background: rgba(3, 3, 3, 0.85);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
             z-index: 90;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        backdrop-filter 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 2rem;
+            will-change: opacity, backdrop-filter;
         }
         .modal-backdrop.active {
             opacity: 1;
             pointer-events: auto;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
         .modal-content {
@@ -538,12 +546,17 @@
             max-width: 900px;
             max-height: 95vh;
             overflow-y: auto;
-            transform: translateY(30px) scale(0.97);
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                        opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            transform: translate3d(0, 30px, 0) scale(0.96);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             opacity: 0;
             position: relative;
             will-change: transform, opacity;
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
         }
         
         @media (min-width: 1024px) {
@@ -552,19 +565,22 @@
             }
         }
         .modal-backdrop.active .modal-content {
-            transform: translateY(0) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
             opacity: 1;
         }
 
         /* Modal Content Animation Stagger */
         .modal-stagger {
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
+            transform: translate3d(0, 20px, 0);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+            backface-visibility: hidden;
         }
         .modal-backdrop.active .modal-stagger {
             opacity: 1;
-            transform: translateY(0);
+            transform: translate3d(0, 0, 0);
         }
         
         /* Financial Analysis Portfolio Styles */
@@ -980,7 +996,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+            backface-visibility: hidden;
         }
         #chatbot-toggle:hover {
             transform: scale(1.1);
@@ -1021,14 +1040,19 @@
             display: flex;
             flex-direction: column;
             opacity: 0;
-            transform: translateY(20px) scale(0.96);
+            transform: translate3d(0, 20px, 0) scale(0.95);
             pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+            backface-visibility: hidden;
         }
         #chatbot-window.active {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
             pointer-events: all;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.9);
         }
         
         .chat-header {
@@ -1277,10 +1301,10 @@
     <div id="project-modal" class="modal-backdrop">
         <div class="modal-content p-8 md:p-12 relative">
             <!-- Reading Progress Bar -->
-            <div id="reading-progress" class="absolute top-0 left-0 h-1 bg-white w-0 transition-all duration-100 z-50"></div>
+            <div id="reading-progress" class="absolute top-0 left-0 h-1 bg-white w-0 z-50" style="transition: width 0.1s ease-out; will-change: width;"></div>
             
-            <button id="close-modal" class="absolute top-6 right-6 hover:rotate-90 transition-transform duration-300 group z-50" aria-label="Close modal">
-                <i data-lucide="x" class="w-8 h-8 text-neutral-500 group-hover:text-white"></i>
+            <button id="close-modal" class="absolute top-6 right-6 hover:rotate-90 transition-transform duration-300 group z-50" style="will-change: transform;" aria-label="Close modal">
+                <i data-lucide="x" class="w-8 h-8 text-neutral-500 group-hover:text-white transition-colors duration-200"></i>
             </button>
             
             <!-- Content Injection Area -->
@@ -1371,7 +1395,7 @@
     </nav>
 
     <!-- Mobile Menu -->
-    <div id="mobile-menu" class="fixed inset-0 bg-off-black z-30 transform translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.3,1)] flex flex-col justify-center items-center space-y-10" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <div id="mobile-menu" class="fixed inset-0 bg-off-black z-30 transform translate-x-full flex flex-col justify-center items-center space-y-10" style="transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; backface-visibility: hidden;" role="dialog" aria-modal="true" aria-label="Navigation menu">
         <a href="#services" class="font-display text-5xl hover:text-gray-500 mobile-link transition-colors">SERVICES</a>
         <a href="#work" class="font-display text-5xl hover:text-gray-500 mobile-link transition-colors">WORK</a>
         <a href="#writing" class="font-display text-5xl hover:text-gray-500 mobile-link transition-colors">WRITING</a>
@@ -3571,12 +3595,12 @@
                 delete metricIntervals[key];
             });
             
-            // Reset modal state
+            // Reset modal state with proper timing for smooth exit
             setTimeout(() => {
                 modal.querySelector('.modal-content').classList.remove('paper-mode');
                 modalBody.innerHTML = ''; // Clear content to reset animations
                 unlockBodyScroll();
-            }, 500);
+            }, 600); // Increased to match longer transition duration
         }
 
         // Reading Progress & Scroll-to-Blur
